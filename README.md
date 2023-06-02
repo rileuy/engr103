@@ -1,4 +1,4 @@
-# REAMDE - ENGR103 - Simon Says Arduino
+# README - ENGR103 - Simon Says Arduino
 Simon Says/Memory Game
 
 OBJECTIVE: Memorize and last as many rounds as possible.
