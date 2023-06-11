@@ -1,108 +1,162 @@
-//Riley Fitzsimonds
-//ENGR 103 Final
-//Simon Says - Memory Game
+// Riley Fitzsimonds
+// ENGR 103 Final
+// Memory Counter Game
 
 #include <Adafruit_CircuitPlayground.h>
 
 volatile bool switchState = 0;
 volatile bool switchFlag = 0;
-volatile bool startB = false;
-volatile bool resetB = false;
+volatile bool rightB = false;
+volatile bool leftB = false;
 int score;
 float level;
 int sequence[100];
 int sequenceLength = 0;
+int currentButtonIndex = 0; // Track the current button in the sequence
 
-void setup() {
+void setup()
+{
   CircuitPlayground.begin();
   CircuitPlayground.clearPixels(); // Clear pixels on startup
 
-  pinMode(4, INPUT_PULLUP);   // start button = 4
-  pinMode(5, INPUT_PULLUP);   // reset game button = 5
-  pinMode(7, INPUT_PULLUP);   // Display current or highest score in LED form. Will choose one.
+  pinMode(4, INPUT_PULLUP); // right button = 4
+  pinMode(5, INPUT_PULLUP); // left button = 5
+  pinMode(7, INPUT_PULLUP); // switch
 
-  attachInterrupt(digitalPinToInterrupt(4), start, RISING);
-  attachInterrupt(digitalPinToInterrupt(5), reset, RISING);
-  attachInterrupt(digitalPinToInterrupt(7), showScore, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(4), right, RISING);
+  attachInterrupt(digitalPinToInterrupt(5), left, RISING);
+  attachInterrupt(digitalPinToInterrupt(7), ISR_Switch, CHANGE);
 
   randomSeed(analogRead(0));
 
   switchState = digitalRead(7);
 
-  Serial.begin(9600); 
-  Serial.print("Score: "); // print score
-  Serial.println(score);
+  Serial.begin(9600);
 }
 
-void loop() {
-  if (startB) {
-    startB = false;
-    resetB = false;
+void loop()
+{
+  if (switchFlag)
+  {
+    switchFlag = false;
+    rightB = false;
+    leftB = false;
     score = 1;
     simonGame();
   }
-  
-  if (resetB) {
-    resetB = false;
+
+  if (leftB)
+  {
+    leftB = false;
     sequenceLength = 0;
     score = 0;
   }
 }
 
-void simonGame() {
-  if (sequenceLength == 0) {
+void indicateButton(uint8_t b, uint16_t duration)
+{
+  CircuitPlayground.clearPixels();
+  CircuitPlayground.setPixelColor(b, 255, 255, 255); // White
+  delay(duration);
+  CircuitPlayground.clearPixels();
+  delay(200);
+}
+
+void simonGame()
+{
+  if (sequenceLength == 0)
+  {
     addToSequence();
   }
 
-  for (int i = 0; i < sequenceLength; i++) {
+  for (int i = 0; i < sequenceLength; i++)
+  {
     int button = sequence[i];
-    switch (startB) {
-      case 0:
-        CircuitPlayground.setPixelColor(0, 255, 0, 0);  // Red
-        delay(500);
-        CircuitPlayground.clearPixels();
-        delay(200);
-        break;
-      case 1:
-        CircuitPlayground.setPixelColor(1, 0, 0, 255);  // Blue
-        delay(500);
-        CircuitPlayground.clearPixels();
-        delay(200);
-        break;
-      case 2:
-        CircuitPlayground.setPixelColor(2, 0, 255, 0);  // Green
-        delay(500);
-        CircuitPlayground.clearPixels();
-        delay(200);
-        break;
-      case 3:
-        CircuitPlayground.setPixelColor(3, 255, 255, 0);  // Yellow
-        delay(500);
-        CircuitPlayground.clearPixels();
-        delay(200);
-        break;
+    switch (button)
+    {
+    case 0:
+      CircuitPlayground.setPixelColor(0, 255, 0, 0);
+      CircuitPlayground.setPixelColor(1, 128, 128, 0);
+      CircuitPlayground.setPixelColor(2, 0, 255, 0);
+      CircuitPlayground.setPixelColor(3, 0, 128, 128);
+      CircuitPlayground.setPixelColor(4, 0, 0, 255);
+      if (leftB) // if left button is pressed
+      {
+        // Next case
+        continue;
+      }
+      else if (rightB) // if right button is pressed
+      {
+        // Stop and don't do anything
+        return;
+      }
+      break;
+    case 1:
+      CircuitPlayground.setPixelColor(6, 0x808000);
+      CircuitPlayground.setPixelColor(7, 0x00FF00);
+      CircuitPlayground.setPixelColor(8, 0x008080);
+      CircuitPlayground.setPixelColor(9, 0x0000FF);
+      break;
+    case 2:
+      CircuitPlayground.setPixelColor(0, 255, 0, 0);
+      CircuitPlayground.setPixelColor(1, 128, 128, 0);
+      CircuitPlayground.setPixelColor(2, 0, 255, 0);
+      CircuitPlayground.setPixelColor(3, 0, 128, 128);
+      CircuitPlayground.setPixelColor(4, 0, 0, 255);
+      break;
+    case 3:
+      CircuitPlayground.setPixelColor(6, 0x808000);
+      CircuitPlayground.setPixelColor(7, 0x00FF00);
+      CircuitPlayground.setPixelColor(8, 0x008080);
+      CircuitPlayground.setPixelColor(9, 0x0000FF);
+      break;
     }
     delay(300);
+    CircuitPlayground.clearPixels(); // Clear the displayed button
+    delay(100);                     // Delay between button display and player input
+
+    // Check if the left button is pressed during the delay
+    if (leftB)
+    {
+      leftB = false;
+      CircuitPlayground.clearPixels(); // Clear the pixels immediately
+      delay(100);                     // Delay to provide some feedback to the player
+      continue;                       // Skip to the next button in the sequence
+    }
   }
 
   addToSequence();
 }
 
-void addToSequence() {
+void addToSequence()
+{
   int nextButton = random(4);
   sequence[sequenceLength] = nextButton;
   sequenceLength++;
 }
 
-void start() {
-  startB = true;
+void right()
+{
+  if (digitalRead(4) == HIGH)
+  {
+    rightB = true;
+  }
 }
 
-void reset() {
-  resetB = true;
+void left()
+{
+  if (digitalRead(5) == HIGH)
+  {
+    leftB = true;
+  }
 }
 
-void showScore() {
+void ISR_Switch()
+{
   delay(50);
-  switchFlag = true;   // Show current or highest score using LEDs
+
+  if (digitalRead(7) == HIGH)
+  {
+    switchFlag = true;
+  }
 }
