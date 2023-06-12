@@ -8,3 +8,8 @@ YOU LOSE!
 
 RULES: The player will go through a scenario and memorize each LED light up and hold the pattern till failure.
 
+Play buttons:
+
+- Right button, Left Button: Choose which side
+- Reset button: Reset game
+- Switch button: Switch to true will start the game
