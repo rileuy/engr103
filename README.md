@@ -11,5 +11,4 @@ RULES: The player will go through a scenario and memorize each LED light up and 
 Play buttons:
 
 - Right button, Left Button: Choose which side
-- Reset button: Reset game
-- Switch button: Switch to true will start the game
+- Reset button: Reset game/Start Game
