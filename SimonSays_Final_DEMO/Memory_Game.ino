@@ -31,22 +31,22 @@ void loop() {
       currNum = GenState();
       if (currNum == 0) {
         rCounter++;
-        CircuitPlayground.strip.setPixelColor(9, 255, 0, 0); // Turn on the LED on the right side (NeoPixel index 9)
-        CircuitPlayground.redLED(true); // Turn on the red LED
-        CircuitPlayground.strip.show(); // Update the NeoPixel LEDs
-        delay(500); // Adjust the delay as needed
-        CircuitPlayground.strip.setPixelColor(9, 0); // Turn off the LED
-        CircuitPlayground.redLED(false); // Turn off the red LED
-        CircuitPlayground.strip.show(); // Update the NeoPixel LEDs
+        CircuitPlayground.strip.setPixelColor(9, 255, 0, 0); 
+        CircuitPlayground.redLED(true); 
+        CircuitPlayground.strip.show(); 
+        delay(500);
+        CircuitPlayground.strip.setPixelColor(9, 0); 
+        CircuitPlayground.redLED(false); 
+        CircuitPlayground.strip.show(); 
       } else {
         lCounter++;
-        CircuitPlayground.strip.setPixelColor(0, 0, 0, 255); // Turn on the LED on the left side (NeoPixel index 0)
-        CircuitPlayground.redLED(true); // Turn on the blue LED
-        CircuitPlayground.strip.show(); // Update the NeoPixel LEDs
-        delay(500); // Adjust the delay as needed
-        CircuitPlayground.strip.setPixelColor(0, 0); // Turn off the LED
-        CircuitPlayground.redLED(false); // Turn off the blue LED
-        CircuitPlayground.strip.show(); // Update the NeoPixel LEDs
+        CircuitPlayground.strip.setPixelColor(0, 0, 0, 255); 
+        CircuitPlayground.redLED(true); 
+        CircuitPlayground.strip.show(); 
+        delay(500); 
+        CircuitPlayground.strip.setPixelColor(0, 0); 
+        CircuitPlayground.redLED(false); 
+        CircuitPlayground.strip.show(); 
       }
       delay(200);
     }
